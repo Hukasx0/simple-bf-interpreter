@@ -8,7 +8,7 @@ section .text
 _start:
     push rbp
     mov rbp,rsp
-    call _readFile
+    jmp _readFile
 
 _readFile:
     mov rdi,[rbp+24]
@@ -55,7 +55,7 @@ inc:
     mov [bfMemory+rbx],rax
     jmp loop
 twofivefive:
-    mov rax,0
+    mov rax,0x0
     mov [bfMemory+rbx],rax
     jmp loop
 
@@ -67,14 +67,18 @@ dec:
     mov [bfMemory+rbx],rax
     jmp loop
 zero:
-    mov rax,255
+    mov rax,0xFF
     mov [bfMemory+rbx],rax
     jmp loop
 
 rarr:
+    cmp rbx,30000
+    je _exit
     inc rbx
     jmp loop
 larr:
+    cmp rbx,0
+    je _exit
     dec rbx
     jmp loop
 
@@ -95,15 +99,29 @@ in:
 
 
 sLoop:
-    mov [loopMem],rbx
     pop rax
-    mov [loopStart], rax
+    mov [loopStart],rax
+    mov [loopMem],rbx
+    push rax
+    jmp recLoop
+
+recLoop:
+    pop rax
+    mov cl,[fileBuffer+rax]
+    cmp cl,93
+    je closeLoop
+    inc rax
+    push rax
+    jmp recLoop
+closeLoop:
+    dec rax
     push rax
     jmp loop
+
 eLoop:
-    mov rdi,[loopMem]
-    mov al,[bfMemory+rdi]
-    cmp al,0
+    mov rcx,[loopMem]
+    mov cl,[bfMemory+rcx]
+    cmp cl,0
     je loop
     pop rax
     mov rax,[loopStart]

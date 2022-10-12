@@ -10,6 +10,6 @@ Written for educational purposes
 ``` shell
 git clone https://github.com/Hukasx0/simple-bf-interpreter 
 cd simple-bf-interpreter/
-chmod +x compile.sh && compile.sh
+chmod +x compile.sh && ./compile.sh
 ./bfInterpreter {FileName} 
 ```
