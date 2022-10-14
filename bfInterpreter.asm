@@ -100,8 +100,12 @@ in:
 
 sLoop:
     pop rax
-    mov [loopStart],rax
-    mov [loopMem],rbx
+    pop rcx
+    mov rsi,rax
+    mov rdx,rbx
+    push rsi
+    push rdx
+    push rcx
     push rax
     jmp recLoop
 
@@ -119,14 +123,24 @@ closeLoop:
     jmp loop
 
 eLoop:
-    mov rcx,[loopMem]
-    mov cl,[bfMemory+rcx]
-    cmp cl,0
-    je loop
     pop rax
-    mov rax,[loopStart]
+    pop rcx
+    pop rdi
+    mov dl,[bfMemory+rdi]
+    cmp dl,0
+    je endLoop
+    pop rdx
+    mov rax,rdx
+    push rdx
+    push rdi
+    push rcx
     push rax
     jmp loop
+endLoop:
+    pop rdx
+    inc rax
+    jmp _interpreter
+    
 
 loop:
     pop rax
@@ -142,5 +156,3 @@ _exit:
 section .bss
 bfMemory: resb 30000
 fileBuffer: resb 100000
-loopStart: resb 1
-loopMem: resb 1
